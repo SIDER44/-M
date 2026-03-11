@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALMEER MUSIC</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+
+  <!-- Auth Overlay -->
+  <div id="authOverlay" class="auth-overlay hidden">
+    <div class="auth-modal">
+      <button class="auth-close" onclick="closeAuth()"><i class="fa fa-times"></i></button>
+
+      <!-- Login Form -->
+      <div id="loginForm" class="auth-form">
+        <div class="auth-logo">
+          <span class="logo-icon">🎵</span>
+          <span class="logo-text">ALMEER MUSIC</span>
+        </div>
+        <h2>Log In</h2>
+        <p class="auth-subtitle">Welcome back! Sign in to continue.</p>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="loginPassword" placeholder="Enter your password" />
+            <i class="fa fa-eye pw-toggle" onclick="togglePw('loginPassword', this)"></i>
+          </div>
+        </div>
+        <div id="loginError" class="auth-error hidden"></div>
+        <button class="btn-primary btn-full" onclick="handleLogin()">
+          <span>Log In</span>
+          <i class="fa fa-arrow-right"></i>
+        </button>
+        <p class="auth-switch">Don't have an account? <a onclick="showRegister()">Sign Up</a></p>
+        <div class="demo-accounts">
+          <p>Demo Accounts:</p>
+          <button onclick="fillDemo('admin@almeermusic.com','Admin@1234')">Admin Login</button>
+          <button onclick="fillDemo('demo@almeermusic.com','Demo@1234')">Demo Login</button>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="auth-form hidden">
+        <div class="auth-logo">
+          <span class="logo-icon">🎵</span>
+          <span class="logo-text">ALMEER MUSIC</span>
+        </div>
+        <h2>Create Account</h2>
+        <p class="auth-subtitle">Join millions of music lovers today.</p>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="regUsername" placeholder="Choose a username" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" placeholder="Enter your email" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="regPassword" placeholder="Create a password (min 6 chars)" />
+            <i class="fa fa-eye pw-toggle" onclick="togglePw('regPassword', this)"></i>
+          </div>
+        </div>
+        <div id="regError" class="auth-error hidden"></div>
+        <button class="btn-primary btn-full" onclick="handleRegister()">
+          <span>Create Account</span>
+          <i class="fa fa-arrow-right"></i>
+        </button>
+        <p class="auth-switch">Already have an account? <a onclick="showLogin()">Log In</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Playlist Modal -->
+  <div id="playlistModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Add to Playlist</h3>
+        <button onclick="closePlaylistModal()"><i class="fa fa-times"></i></button>
+      </div>
+      <div id="playlistModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Create Playlist Modal -->
+  <div id="createPlaylistModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Create Playlist</h3>
+        <button onclick="closeCreatePlaylist()"><i class="fa fa-times"></i></button>
+      </div>
+      <div class="form-group">
+        <label>Playlist Name</label>
+        <input type="text" id="newPlaylistName" placeholder="My Awesome Playlist" />
+      </div>
+      <div class="form-group">
+        <label>Description (optional)</label>
+        <input type="text" id="newPlaylistDesc" placeholder="Describe your playlist..." />
+      </div>
+      <button class="btn-primary btn-full" onclick="createPlaylist()">Create Playlist</button>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div id="profileModal" class="modal-overlay hidden">
+    <div class="modal-box modal-large">
+      <div class="modal-header">
+        <h3>My Profile</h3>
+        <button onclick="closeProfileModal()"><i class="fa fa-times"></i></button>
+      </div>
+      <div id="profileContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- APP LAYOUT -->
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">🎵</span>
+        <span class="logo-text">ALMEER MUSIC</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-page="home" onclick="navigate('home')">
+          <i class="fa fa-home"></i><span>Home</span>
+        </a>
+        <a class="nav-item" data-page="search" onclick="navigate('search')">
+          <i class="fa fa-search"></i><span>Search</span>
+        </a>
+        <a class="nav-item" data-page="trending" onclick="navigate('trending')">
+          <i class="fa fa-fire"></i><span>Trending</span>
+        </a>
+        <a class="nav-item" data-page="genres" onclick="navigate('genres')">
+          <i class="fa fa-music"></i><span>Genres</span>
+        </a>
+        <a class="nav-item auth-only hidden" data-page="favorites" onclick="navigate('favorites')">
+          <i class="fa fa-heart"></i><span>Favorites</span>
+        </a>
+        <a class="nav-item auth-only hidden" data-page="playlists" onclick="navigate('playlists')">
+          <i class="fa fa-list"></i><span>Playlists</span>
+        </a>
+        <a class="nav-item auth-only hidden" data-page="history" onclick="navigate('history')">
+          <i class="fa fa-history"></i><span>History</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div id="sidebarUser" class="sidebar-user hidden">
+          <div class="user-avatar" id="sidebarAvatar">A</div>
+          <div class="user-info">
+            <div class="user-name" id="sidebarUsername"></div>
+            <div class="user-role" id="sidebarRole"></div>
+          </div>
+          <i class="fa fa-chevron-right" onclick="showProfile()"></i>
+        </div>
+        <div id="sidebarLogin" class="sidebar-login-btn">
+          <button onclick="showAuth()"><i class="fa fa-sign-in-alt"></i> Login / Sign Up</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <div class="topbar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">
+          <i class="fa fa-bars"></i>
+        </button>
+        <div class="topbar-search">
+          <i class="fa fa-search"></i>
+          <input type="text" id="topSearchInput" placeholder="Search songs, artists, albums..." onkeyup="handleSearchKey(event)" />
+          <button onclick="performSearch()" class="search-btn-inline">Search</button>
+        </div>
+        <div class="topbar-right">
+          <div id="topbarUser" class="topbar-user hidden">
+            <div class="user-avatar small" id="topbarAvatar">A</div>
+            <span id="topbarUsername"></span>
+            <div class="dropdown">
+              <button onclick="toggleUserMenu()"><i class="fa fa-chevron-down"></i></button>
+              <div class="dropdown-menu hidden" id="userMenu">
+                <a onclick="showProfile()"><i class="fa fa-user"></i> Profile</a>
+                <a onclick="navigate('favorites')"><i class="fa fa-heart"></i> Favorites</a>
+                <a onclick="navigate('playlists')"><i class="fa fa-list"></i> Playlists</a>
+                <a onclick="navigate('history')"><i class="fa fa-history"></i> History</a>
+                <hr>
+                <a onclick="logout()" class="logout-link"><i class="fa fa-sign-out-alt"></i> Logout</a>
+              </div>
+            </div>
+          </div>
+          <div id="topbarLogin">
+            <button class="btn-outline" onclick="showAuth()">Login</button>
+            <button class="btn-primary" onclick="showRegister()">Sign Up</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Page Content -->
+      <div class="page-content" id="pageContent"></div>
+    </main>
+  </div>
+
+  <!-- Music Player Bar -->
+  <div class="player-bar" id="playerBar">
+    <div class="player-track">
+      <img id="playerCover" src="" alt="" />
+      <div class="player-track-info">
+        <div class="player-title" id="playerTitle">No song playing</div>
+        <div class="player-artist" id="playerArtist">—</div>
+      </div>
+      <button class="player-like-btn" id="playerLikeBtn" onclick="toggleCurrentFavorite()">
+        <i class="fa fa-heart"></i>
+      </button>
+    </div>
+
+    <div class="player-controls">
+      <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="Shuffle">
+        <i class="fa fa-random"></i>
+      </button>
+      <button class="ctrl-btn" onclick="prevTrack()" title="Previous">
+        <i class="fa fa-step-backward"></i>
+      </button>
+      <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay()">
+        <i class="fa fa-play" id="playIcon"></i>
+      </button>
+      <button class="ctrl-btn" onclick="nextTrack()" title="Next">
+        <i class="fa fa-step-forward"></i>
+      </button>
+      <button class="ctrl-btn" id="repeatBtn" onclick="toggleRepeat()" title="Repeat">
+        <i class="fa fa-redo"></i>
+      </button>
+    </div>
+
+    <div class="player-right">
+      <div class="player-progress-wrap">
+        <span id="currentTime">0:00</span>
+        <div class="progress-bar-wrap" onclick="seekTo(event)">
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-thumb" id="progressThumb"></div>
+          </div>
+        </div>
+        <span id="totalTime">0:00</span>
+      </div>
+      <div class="volume-wrap">
+        <button class="ctrl-btn" onclick="toggleMute()" id="muteBtn">
+          <i class="fa fa-volume-up" id="volIcon"></i>
+        </button>
+        <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80" oninput="setVolume(this.value)" />
+      </div>
+    </div>
+  </div>
+
+  <audio id="audioPlayer" preload="metadata"></audio>
+  <script src="/js/app.js"></script>
+</body>
+      </html>
